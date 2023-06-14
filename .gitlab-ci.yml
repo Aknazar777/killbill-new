@@ -1,0 +1,21 @@
+stages:
+  - kill-bill-dev
+
+kill-bill-dev:
+  stage: kill-bill-dev
+  tags:
+    - dev-cc
+  image: 
+    name: alpine/k8s:1.25.6
+    entrypoint: [""]
+  before_script:
+    - mkdir -p ~/.kube/
+    - echo ${KUB_DEV} | base64 -d > ~/.kube/config
+    - chmod o-r ~/.kube/config
+    - chmod g-r ~/.kube/config
+  script:
+    - helm upgrade --create-namespace --install kill-bill-mariadb helm -n dev -f helm/dev.yml
+    - kubectl apply -f dev.yml -n dev
+  only:
+    - master
+  when: manual

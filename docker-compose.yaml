@@ -1,0 +1,25 @@
+version: '3.2'
+services:
+  killbill:
+    image: killbill/killbill:0.20.10
+    restart: always
+    environment:
+      - KILLBILL_DAO_URL=jdbc:postgresql://db:5432/killbill
+      - KILLBILL_DAO_USER=postgres
+      - KILLBILL_DAO_PASSWORD=postgres
+  kaui:
+    image: killbill/kaui:1.0.6
+    restart: always
+    ports:
+      - "9090:8080"
+    environment:
+      - KAUI_CONFIG_DAO_ADAPTER=postgresql
+      - KAUI_CONFIG_DAO_URL=jdbc:postgresql://db:5432/kaui
+      - KAUI_CONFIG_DAO_USER=postgres
+      - KAUI_CONFIG_DAO_PASSWORD=postgres
+      - KAUI_KILLBILL_URL=http://killbill:8080
+  db:
+    image: killbill/postgresql:0.20
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
